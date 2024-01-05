@@ -11,6 +11,11 @@ const PostForm = ({ create }) => {
       ...post,
       id: Date.now(),
     }
+
+    if (post.title === '' || post.body === '') {
+      return post
+    }
+
     create(newPost)
     setPost({ title: '', body: '' })
   }
