@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './styles/App.css'
 import PostList from './components/PostList'
 
@@ -9,20 +9,30 @@ import MyModal from './components/UI/modal/MyModal'
 import MyButton from './components/UI/button/MyButton'
 import { usePosts } from './hooks/usePosts'
 
+import PostService from './api/PostService'
+
 function App() {
-  const [posts, setPosts] = useState([
-    { id: 1, title: 'LJavaScript', body: 'ADescription' },
-    { id: 2, title: 'GJavaScript 2', body: 'Fescription 2' },
-    { id: 3, title: 'AJavaScript 3', body: 'DDescription 3' },
-  ])
+  const [posts, setPosts] = useState([])
 
   const [filter, setFilter] = useState({ sort: '', query: '' })
   const [modal, setModal] = useState(false)
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+  const [isPostLoading, setIsPostLoading] = useState(false)
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
     setModal(false)
+  }
+
+  async function fetchPosts() {
+    setIsPostLoading(true)
+    const posts = await PostService.getAll()
+    setPosts(posts)
+    setIsPostLoading(false)
   }
 
   const removePost = (post) => {
@@ -54,12 +64,15 @@ function App() {
           { value: 'body', name: 'По описанию' },
         ]}
       />
-
-      <PostList
-        remove={removePost}
-        posts={sortedAndSearchedPosts}
-        title="Посты про JS"
-      />
+      {isPostLoading ? (
+        <h1 style={{ textAlign: 'center' }}>Loading...</h1>
+      ) : (
+        <PostList
+          remove={removePost}
+          posts={sortedAndSearchedPosts}
+          title="Посты про JS"
+        />
+      )}
     </div>
   )
 }
