@@ -21,3 +21,19 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.page__wrapper {
+  margin: 30px 0;
+  display: flex;
+}
+
+.page {
+  padding: 10px;
+  border: 1px solid teal;
+  cursor: pointer;
+}
+
+.page__current {
+  border: 2px solid orange;
+  font-weight: bold;
+}
